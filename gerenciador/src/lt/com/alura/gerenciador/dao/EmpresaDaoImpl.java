@@ -1,6 +1,7 @@
 package lt.com.alura.gerenciador.dao;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lt.com.alura.gerenciador.Empresa;
 
@@ -29,9 +30,9 @@ public class EmpresaDaoImpl {
 		
 		// MySQL
 		private static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
-		private static final String DB_URL = "jdbc:mysql://localhost/ca";
+		private static final String DB_URL = "jdbc:mysql://localhost:3306/empresas";
 		private static final String ID = "root";
-		private static final String PASS = "";
+		private static final String PASS = "2812";
 		
 		// PostgreSQLs
 //		private static final String DRIVER_NAME = "org.postgresql.Driver";
@@ -95,6 +96,43 @@ public class EmpresaDaoImpl {
 			}
 			
 			return list;
+		}
+		
+		public List<Empresa> busquedaPorSimilaridad(String filtro){
+			Connection conn = null;
+			PreparedStatement stmt = null;
+			List<Empresa> list = new ArrayList<Empresa>();
+			
+			try {
+				conn = getConnection();
+				stmt = conn.prepareStatement(FIND_ALL);
+				ResultSet rs = stmt.executeQuery();
+				
+				while (rs.next()) {
+					Empresa empresa = new Empresa();
+					empresa.setId(rs.getInt("id"));
+					empresa.setNombre(rs.getString("nombre"));
+					
+					empresa.setFecha(rs.getString("fecha"));
+					
+					
+					list.add(empresa);
+				}
+			} catch (SQLException e) {
+				// e.printStackTrace();
+				throw new RuntimeException(e);
+			} finally {
+				close(stmt);
+				close(conn);
+			}
+			
+			//list.stream()                        
+            //.filter(c -> "blue".equalsIgnoreCase( filtro )).collect(Collectors.toList());
+			
+			List<Empresa> filterList = list.stream()
+			.filter(c ->  c.getNombre().toLowerCase().contains(filtro.toLowerCase() )).collect(Collectors.toList());
+			
+			return filterList;
 		}
 		
 		public Empresa findById(int id) {

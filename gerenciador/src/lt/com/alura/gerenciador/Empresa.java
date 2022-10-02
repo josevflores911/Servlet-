@@ -1,6 +1,6 @@
 package lt.com.alura.gerenciador;
 
-import java.util.Date;
+
 
 public class Empresa {
 	
@@ -8,6 +8,16 @@ public class Empresa {
 	private String nombre;
 	private String fecha;
 	
+	
+	
+	public Empresa() {
+		super();
+	}
+	public Empresa(Integer id, String nombre) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+	}
 	public Integer getId() {
 		return id;
 	}
@@ -28,4 +38,10 @@ public class Empresa {
 	public String getFecha() {
 		return fecha;
 	}
+	@Override
+	public String toString() {
+		return "Empresa [id = " + id + ", nombre = " + nombre + "]";
+	}
+	
+	
 }
